@@ -1,4 +1,25 @@
-import { model, models, Schema } from "mongoose";
+import { Document, model, models, Schema } from "mongoose";
+
+export interface IImage extends Document {
+  title: string;
+  transformationType: string;
+  publicId: string;
+  secureUlr: string;
+  width?: number;
+  height?: number;
+  config?: object;
+  transformationUrl?: URL;
+  aspectRatio?: string;
+  color?: string;
+  prompt?: string;
+  author: {
+    _id: String;
+    firstName: String;
+    lastName: String;
+  };
+  createAt?: Date;
+  updatedAt?: Date;
+}
 
 const imageSchema = new Schema({
   title: {
