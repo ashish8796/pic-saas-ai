@@ -42,4 +42,23 @@ export const connectToDatabase = async () => {
   } catch (error) {
     console.log("Error connecting to MongoDB: ", error);
   }
+
+  if (!MONGODB_URL) {
+    throw new Error(
+      "Please define the MONGODB_URL environment variable inside .env.local"
+    );
+  }
+
+  cached.promise =
+    cached.promise ||
+    mongoose.connect(MONGODB_URL, {
+      dbName: "pic-saas-ai",
+      bufferCommands: false,
+    });
+
+  console.log("Connecting to MongoDB");
+  cached.conn = await cached.promise;
+  console.log("Connected to MongoDB");
+
+  return cached.conn;
 };
