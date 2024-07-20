@@ -30,8 +30,8 @@ export async function getUserById(userId: string) {
 
     return JSON.parse(JSON.stringify(user));
   } catch (error) {
-    console.log("Error in createUser:", error);
-    handleError(error);
+    console.log("Error fetching user: ", error);
+    // handleError(error);
   }
 }
 
