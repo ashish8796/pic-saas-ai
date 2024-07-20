@@ -19,23 +19,27 @@ if (!cached) {
 }
 
 export const connectToDatabase = async () => {
-  if (cached.conn) {
+  try {
+    if (cached.conn) {
+      return cached.conn;
+    }
+
+    if (!MONGODB_URL) {
+      throw new Error(
+        "Please define the MONGODB_URL environment variable inside .env.local"
+      );
+    }
+
+    cached.promise =
+      cached.promise ||
+      mongoose.connect(MONGODB_URL, {
+        dbName: "pic-saas-ai",
+        bufferCommands: false,
+      });
+
+    cached.conn = await cached.promise;
     return cached.conn;
+  } catch (error) {
+    console.log("Error connecting to MongoDB: ", error);
   }
-
-  if (!MONGODB_URL) {
-    throw new Error(
-      "Please define the MONGODB_URL environment variable inside .env.local"
-    );
-  }
-
-  cached.promise =
-    cached.promise ||
-    mongoose.connect(MONGODB_URL, {
-      dbName: "pic-saas-ai",
-      bufferCommands: false,
-    });
-
-  cached.conn = await cached.promise;
-  return cached.conn;
 };

@@ -5,6 +5,7 @@ const isPublicRoute = createRouteMatcher(["/api/webhooks/clerk"]);
 
 export default clerkMiddleware((auth, req) => {
   if (isPublicRoute(req)) {
+    console.log("Public route: ", req.url);
     return;
   } else if (isProtectedRoute(req)) auth().protect();
 });
