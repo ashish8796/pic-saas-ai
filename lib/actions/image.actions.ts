@@ -4,10 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { v2 as cloudinary } from "cloudinary";
-import User from "./db/models/user.model";
-import { connectToDatabase } from "./db/mongoose";
-import Image from "./db/models/image.model";
-import { handleError } from "./utils";
+import User from "../db/models/user.model";
+import { connectToDatabase } from "../db/mongoose";
+import Image from "../db/models/image.model";
+import { handleError } from "../utils";
 
 const populateUser = (query: any) =>
   query.populate({
