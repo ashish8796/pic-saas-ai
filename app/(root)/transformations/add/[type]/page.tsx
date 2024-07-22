@@ -12,23 +12,25 @@ const AddTransformationTypePage = async ({
   const { userId } = auth();
   const transformation = transformationTypes[type];
 
-  console.log("UserId: ", userId);
+  // console.log("UserId: ", userId);
 
   if (!userId) return redirect("/sign-in");
   const user = await getUserById(userId);
 
-  console.log("User: ", user);
+  // console.log("User: ", user);
 
   return (
     <>
       <Header title={transformation.title} subtitle={transformation.subTitle} />
       {user && (
-        <TransformationForm
-          action="Add"
-          userId={user?._id}
-          type={transformation.type as TransformationTypeKey}
-          creditBalance={user.creditBalance}
-        />
+        <section className="mt-10">
+          <TransformationForm
+            action="Add"
+            userId={user?._id}
+            type={transformation.type as TransformationTypeKey}
+            creditBalance={user.creditBalance}
+          />
+        </section>
       )}
     </>
   );
