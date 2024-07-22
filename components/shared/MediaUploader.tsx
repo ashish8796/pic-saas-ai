@@ -28,7 +28,7 @@ const MediaUploader = ({
       publicId: res?.info.public_id,
       width: res?.info.width,
       height: res?.info.height,
-      secureUrl: res?.info?.public_id,
+      secureURL: res?.info?.public_id,
     }));
 
     onValueChange(res?.info?.secure_url);
