@@ -18,8 +18,8 @@ export default clerkMiddleware(
       console.log("Protected route: ", req.url);
       auth().protect();
     }
-  },
-  { debug: true }
+  }
+  // { debug: true }
 );
 
 export const config = {
