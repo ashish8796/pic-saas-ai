@@ -3,13 +3,7 @@ import React from "react";
 
 const SingInPage = () => {
   console.log("IM on SingInPage");
-  return (
-    <SignIn
-      forceRedirectUrl={
-        process.env.NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL
-      }
-    />
-  );
+  return <SignIn />;
 };
 
 export default SingInPage;
