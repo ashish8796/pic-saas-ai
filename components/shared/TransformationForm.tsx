@@ -77,10 +77,9 @@ const TransformationForm = ({
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     setIsSubmitting(true);
     if (data || image) {
-      const transformationUrl = getCldImageUrl({
+      const transformationUrl = await getCldImageUrl({
         width: image?.width,
         height: image?.height,
         src: image?.publicId,
@@ -94,13 +93,15 @@ const TransformationForm = ({
         width: image?.width,
         height: image?.height,
         config: transformationConfig,
-        secureURL: image?.secureUlr,
+        secureUrl: image?.secureUrl,
         transformationType: type,
-        transformationURL: transformationUrl,
+        transformationUrl: transformationUrl,
         aspectRatio: values.aspectRatio,
         color: values.color,
         prompt: values.prompt,
       };
+
+      // console.log({ imageData });
 
       if (action === "Add") {
         try {
@@ -109,7 +110,6 @@ const TransformationForm = ({
             userId,
             path: "/",
           });
-
           if (newImage) {
             form.reset();
             setImage(data);
@@ -190,7 +190,17 @@ const TransformationForm = ({
     setIsTransforming(false);
   };
 
-  useEffect(() => {}, [image, transformationType.config, type]);
+  useEffect(() => {
+    if (image && (type === "restore" || type === "removeBackground")) {
+      setNewTransformation(transformationType.config);
+    }
+  }, [image, transformationType.config, type]);
+
+  // console.log({
+  //   isTransforming,
+  //   newTransformation,
+  //   image,
+  // });
 
   return (
     <Form {...form}>
@@ -210,9 +220,10 @@ const TransformationForm = ({
             name="aspectRatio"
             render={({ field }) => (
               <Select
-                onValueChange={(value) =>
-                  onSelectFieldHandler(value, field.onchange)
-                }
+                onValueChange={(value) => {
+                  console.log("Value: ", value);
+                  onSelectFieldHandler(value, field.onChange);
+                }}
               >
                 <SelectTrigger className="select-field">
                   <SelectValue placeholder="Select Size" />
@@ -312,10 +323,14 @@ const TransformationForm = ({
           <Button
             type="button"
             className="submit-button capitalize"
-            disabled={isTransforming || newTransformation === null}
+            disabled={
+              image?.publicId !== undefined
+                ? isTransforming || newTransformation === null
+                : true
+            }
             onClick={onTransformationHandler}
           >
-            {isTransforming ? "Transforming..." : "Apply Transformation"}{" "}
+            {isTransforming ? "Transforming..." : "Apply Transformation"}
           </Button>
 
           <Button
