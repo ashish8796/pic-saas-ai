@@ -28,10 +28,10 @@ const MediaUploader = ({
       publicId: res?.info.public_id,
       width: res?.info.width,
       height: res?.info.height,
-      secureURL: res?.info?.public_id,
+      secureUrl: res?.info?.secure_url,
     }));
 
-    onValueChange(res?.info?.secure_url);
+    onValueChange(res?.info?.public_id);
 
     toast({
       title: "Image uploaded successfully",

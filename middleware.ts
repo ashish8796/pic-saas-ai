@@ -1,25 +1,36 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher(["/"]);
 const isPublicRoute = createRouteMatcher([
   "/api/webhooks/clerk",
-  "/sign-in",
-  "/sign-up",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
 ]);
 
 export default clerkMiddleware(
   (auth, req) => {
-    if (isPublicRoute(req)) {
-      console.log("Public route: ", req.url);
+    // console.log("Auth: ", auth());
+    if (req.url.includes("/sign-up") && auth().userId) {
+      // console.log("Sign-up Route");
+      // console.log("req.url: ", req.url);
+
+      if (window !== undefined) {
+        window.location.href = "/";
+      }
+
       return;
     }
 
-    if (!auth().userId && isProtectedRoute(req)) {
-      console.log("Protected route: ", req.url);
+    if (!isPublicRoute(req)) {
+      const { userId } = auth();
+
+      if (!userId) {
+        return auth().redirectToSignIn({ returnBackUrl: req.url });
+      }
       auth().protect();
     }
-  }
-  // { debug: true }
+  },
+  { debug: true }
 );
 
 export const config = {

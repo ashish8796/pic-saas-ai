@@ -94,37 +94,30 @@ export async function getImageById(imageId: string) {
 }
 
 // GET IMAGES
-export async function getAllImages({
-  limit = 9,
-  page = 1,
-  searchQuery = "",
-}: {
-  limit?: number;
-  page: number;
-  searchQuery?: string;
-}) {
+export async function getAllImages({ limit = 9, page = 1, searchQuery = "" }) {
   try {
     await connectToDatabase();
 
     cloudinary.config({
       cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
+      api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
       secure: true,
     });
 
-    let expression = "folder=imaginify";
-
+    let expression = "folder=pic_saas_ai";
     if (searchQuery) {
-      expression += ` AND ${searchQuery}`;
+      expression += `AND ${searchQuery}`;
     }
 
-    const { resources } = await cloudinary.search
+    const { resource } = await cloudinary.search
       .expression(expression)
       .execute();
 
-    const resourceIds = resources.map((resource: any) => resource.public_id);
+    console.log("Resources: ", { resource });
 
+    const resourceIds =
+      resource && resource.map((resource: any) => resource.public_id);
     let query = {};
 
     if (searchQuery) {
@@ -136,9 +129,10 @@ export async function getAllImages({
     }
 
     const skipAmount = (Number(page) - 1) * limit;
-
     const images = await populateUser(Image.find(query))
-      .sort({ updatedAt: -1 })
+      .sort({
+        updatedAt: -1,
+      })
       .skip(skipAmount)
       .limit(limit);
 
@@ -147,14 +141,14 @@ export async function getAllImages({
 
     return {
       data: JSON.parse(JSON.stringify(images)),
-      totalPage: Math.ceil(totalImages / limit),
+      totalImages: Math.ceil(totalImages / limit),
       savedImages,
     };
   } catch (error) {
+    console.log("Error fetching images: ", error);
     handleError(error);
   }
 }
-
 // GET IMAGES BY USER
 export async function getUserImages({
   limit = 9,
