@@ -9,13 +9,6 @@ export async function POST(request: Request) {
   const sig = request.headers.get("x-razorpay-signature") as string;
   const endpointSecret = process.env.RAZORPAY_WEBHOOK_SECRET as string;
 
-  // console.log({
-  //   responseBody: JSON.stringify(JSON.parse(responseBody)),
-  //   sig,
-  //   endpointSecret,
-  //   header: request.headers,
-  // });
-
   try {
     const isValid = await validateWebhookSignature(
       JSON.stringify(JSON.parse(responseBody)),
@@ -33,8 +26,6 @@ export async function POST(request: Request) {
     const {
       payload: { payment_link, payment },
     } = body;
-    console.log("payment_link: ", payment_link);
-    console.log("payment: ", payment);
 
     if (event && event === "payment_link.paid") {
       const { id, amount, notes, status } = payment?.entity;
@@ -48,12 +39,12 @@ export async function POST(request: Request) {
         createdAt: new Date(),
       };
 
-      console.log("transaction: ", transaction);
+      // console.log("transaction: ", transaction);
 
       if (status === "captured") {
         const newTransaction = await createTransaction(transaction);
 
-        console.log("newTransaction: ", newTransaction);
+        // console.log("newTransaction: ", newTransaction);
 
         return NextResponse.json({
           message: "OK",
@@ -66,7 +57,9 @@ export async function POST(request: Request) {
       }
     }
 
-    return new Response("", { status: 200 });
+    return NextResponse.json({
+      message: "Ok",
+    });
   } catch (error) {
     console.log("Error: ", error);
   }

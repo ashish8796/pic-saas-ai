@@ -9,19 +9,9 @@ import {
   ToastViewport,
 } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
-import { useEffect } from "react";
 
 export function Toaster() {
   const { toasts } = useToast();
-  console.log("Toaster is rendered.");
-
-  useEffect(() => {
-    console.log("Toaster is mounted.", "All Toasts: ", toasts);
-    return () => {
-      console.log("Unmounting Toaster.");
-    };
-  });
-
   return (
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {

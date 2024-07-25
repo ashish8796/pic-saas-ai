@@ -38,15 +38,13 @@ export async function checkoutCredits(transaction: CheckoutTransactionParams) {
     callback_method: "get",
   };
 
-  // console.log("==========PaymentLinkObj======", paymentLinkObj);
-
   try {
     const paymentLink = await razorpay.paymentLink.create(paymentLinkObj);
-    // console.log("PaymentLink Response", paymentLink);
 
     return JSON.parse(JSON.stringify(paymentLink));
   } catch (error) {
     console.log("Error creating payment link: ", error);
+    handleError(error);
   }
 }
 

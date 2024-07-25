@@ -74,18 +74,12 @@ const addToRemoveQueue = (toastId: string) => {
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
-      // console.log("ADD_TOAST: ", action, "state: ", {
-      //   ...state,
-      //   toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
-      // });
-
       return {
         ...state,
         toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
       };
 
     case "UPDATE_TOAST":
-      console.log("UPDATE_TOAST: ", action, state);
       return {
         ...state,
         toasts: state.toasts.map((t) =>
@@ -94,7 +88,6 @@ export const reducer = (state: State, action: Action): State => {
       };
 
     case "DISMISS_TOAST": {
-      console.log("DISMISS_TOAST: ", action, state);
       const { toastId } = action;
 
       // ! Side effects ! - This could be extracted into a dismissToast() action,
@@ -120,7 +113,6 @@ export const reducer = (state: State, action: Action): State => {
       };
     }
     case "REMOVE_TOAST":
-      console.log("REMOVE_TOAST: ", action, state);
       if (action.toastId === undefined) {
         return {
           ...state,
@@ -139,13 +131,10 @@ const listeners: Array<(state: State) => void> = [];
 let memoryState: State = { toasts: [] };
 
 function dispatch(action: Action) {
-  // console.log("Action Dispatched: ", action);
   memoryState = reducer(memoryState, action);
   listeners.forEach((listener) => {
     listener(memoryState);
   });
-
-  // console.log("Listeners: ", listeners, "MemoryState: ", memoryState);
 }
 
 type Toast = Omit<ToasterToast, "id">;
@@ -188,8 +177,6 @@ function useToast() {
       if (index > -1) {
         listeners.splice(index, 1);
       }
-
-      console.log("Listeners at unmount: ", listeners);
     };
   }, [state]);
 

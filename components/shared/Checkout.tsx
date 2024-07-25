@@ -20,18 +20,14 @@ const Checkout = memo(function Checkout({
   buyerId: string;
 }) {
   const [toastId, setToastId] = useState<string | null>(null);
-  const { toast, toasts } = useToast();
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  // console.log("Search Params: ", searchParams.toString(), toast);
-  // console.log("All toasts: ", toasts);
 
   if (toastId == null) {
     const status = searchParams.get("razorpay_payment_link_status");
 
     if (status === "paid") {
-      console.log("Success toast is shown");
       const toastData = toast({
         title: "Order placed!",
         description: "You will receive an email confirmation",
@@ -41,7 +37,6 @@ const Checkout = memo(function Checkout({
 
       setToastId(toastData.id);
     } else if (status === "failed") {
-      // console.log("Error toast is shown");
       const toastData = toast({
         title: "Order Failed!",
         description: "Continue to shop around and checkout when you're ready",
@@ -51,9 +46,13 @@ const Checkout = memo(function Checkout({
 
       setToastId(toastData.id);
     }
-
-    router.push("/credits");
   }
+
+  useEffect(() => {
+    if (toastId) {
+      router.push("/profile");
+    }
+  }, [toastId]);
 
   const onCheckout = async () => {
     const transaction = {
@@ -63,10 +62,7 @@ const Checkout = memo(function Checkout({
       buyerId,
     };
 
-    // console.log("transaction: ", transaction);
-
     const paymentLinkResponse = await checkoutCredits(transaction);
-    // console.log("paymentLinkResponse: ", paymentLinkResponse);
 
     if (paymentLinkResponse && paymentLinkResponse.short_url) {
       router.push(paymentLinkResponse.short_url);
