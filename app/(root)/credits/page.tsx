@@ -8,6 +8,7 @@ import { plans } from "@/constants";
 import { getUserById } from "@/lib/actions/user.actions";
 import Checkout from "@/components/shared/Checkout";
 import { SignedIn } from "@clerk/nextjs";
+import Link from "next/link";
 
 const Credits = async () => {
   const { userId } = auth();
@@ -22,6 +23,23 @@ const Credits = async () => {
         title="Buy Credits"
         subtitle="Choose a credit package that suits your needs!"
       />
+
+      <section className="mt-1">
+        <p>
+          Payment instructions: Use 4111 1111 1111 1111 as the card number, any
+          CVV, and any future expiry date. For more info, please check{" "}
+          <Link
+            href={
+              "https://razorpay.com/docs/payments/payments/test-card-details/"
+            }
+            className="text-blue-700"
+            target="_blank"
+          >
+            here
+          </Link>
+          .
+        </p>
+      </section>
 
       <section>
         <ul className="credits-list">

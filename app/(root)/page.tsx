@@ -10,7 +10,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const searchQuery = (searchParams?.query as string) || "";
   const images = await getAllImages({ page, searchQuery });
 
-  console.log("IM on Home Page");
+  // console.log("IM on Home Page");
 
   return (
     <>

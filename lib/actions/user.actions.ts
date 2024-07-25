@@ -31,7 +31,7 @@ export async function getUserById(userId: string) {
     return JSON.parse(JSON.stringify(user));
   } catch (error) {
     console.log("Error fetching user: ", error);
-    // handleError(error);
+    handleError(error);
   }
 }
 
@@ -84,8 +84,6 @@ export async function updateCredits(userId: string, creditFee: number) {
       { $inc: { creditBalance: creditFee } },
       { new: true }
     );
-
-    console.log("updatedUserCredits: ", updatedUserCredits);
 
     if (!updatedUserCredits) throw new Error("User credits update failed");
 

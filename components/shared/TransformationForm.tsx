@@ -221,7 +221,6 @@ const TransformationForm = ({
             render={({ field }) => (
               <Select
                 onValueChange={(value) => {
-                  console.log("Value: ", value);
                   onSelectFieldHandler(value, field.onChange);
                 }}
                 value={field.value}
@@ -307,7 +306,6 @@ const TransformationForm = ({
               />
             )}
             className="flex size-full flex-col"
-            formLabel={!image?.publicId ? "Upload Image" : ""}
           />
 
           <TransformedImage

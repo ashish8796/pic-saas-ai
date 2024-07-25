@@ -7,7 +7,6 @@ import { Webhook } from "svix";
 
 export async function POST(req: Request) {
   try {
-    console.log("Received Webhook Event");
     const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
     if (!WEBHOOK_SECRET) {
@@ -29,8 +28,6 @@ export async function POST(req: Request) {
 
     // Get the body
     const payload = await req.json();
-    console.log("Webhook Payload:", payload);
-
     const body = JSON.stringify(payload);
 
     // Create a new Svix instance with your secret.
@@ -58,7 +55,6 @@ export async function POST(req: Request) {
 
     // CREATE
     if (eventType === "user.created") {
-      console.log("Creating User in MongoDB");
       const {
         id,
         email_addresses,
@@ -78,7 +74,6 @@ export async function POST(req: Request) {
       };
 
       const newUser = await createUser(user);
-      console.log("User Created:", newUser);
       // Set public metadata
       if (newUser) {
         await clerkClient.users.updateUserMetadata(id, {
@@ -93,7 +88,6 @@ export async function POST(req: Request) {
 
     // UPDATE
     if (eventType === "user.updated") {
-      console.log("Updating User in MongoDB");
       const { id, image_url, first_name, last_name, username } = evt.data;
 
       const user = {
@@ -104,23 +98,16 @@ export async function POST(req: Request) {
       };
 
       const updatedUser = await updateUser(id, user);
-      console.log("User Updated:", updatedUser);
       return NextResponse.json({ message: "OK", user: updatedUser });
     }
 
     // DELETE
     if (eventType === "user.deleted") {
-      console.log("Updating User in MongoDB");
-
       const { id } = evt.data;
 
       const deletedUser = await deleteUser(id!);
-      console.log("User Deleted:", deletedUser);
       return NextResponse.json({ message: "OK", user: deletedUser });
     }
-
-    console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
-    console.log("Webhook body:", body);
 
     return new Response("", { status: 200 });
   } catch (error) {

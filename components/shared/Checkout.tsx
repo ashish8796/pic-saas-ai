@@ -19,6 +19,7 @@ const Checkout = memo(function Checkout({
   credits: number;
   buyerId: string;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [toastId, setToastId] = useState<string | null>(null);
   const { toast } = useToast();
   const searchParams = useSearchParams();
