@@ -2,7 +2,7 @@ import { Schema, model, models } from "mongoose";
 
 export type TransactionDocument = Document & {
   createdAt: Date;
-  stripeId: string;
+  paymentId: string;
   amount: number;
   plan?: string;
   credits?: number;
@@ -14,7 +14,7 @@ const TransactionSchema = new Schema<TransactionDocument>({
     type: Date,
     default: Date.now,
   },
-  stripeId: {
+  paymentId: {
     type: String,
     required: true,
     unique: true,
