@@ -1,14 +1,14 @@
 "use client";
 
-// import { loadStripe } from "@stripe/stripe-js";
-import { useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { useToast } from "@/components/ui/use-toast";
 import { checkoutCredits } from "@/lib/actions/transaction.action";
 
 import { Button } from "../ui/button";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const Checkout = ({
+const Checkout = memo(function Checkout({
   plan,
   amount,
   credits,
@@ -18,34 +18,42 @@ const Checkout = ({
   amount: number;
   credits: number;
   buyerId: string;
-}) => {
-  const { toast } = useToast();
+}) {
+  const [toastId, setToastId] = useState<string | null>(null);
+  const { toast, toasts } = useToast();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  useEffect(() => {
-    // loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-  }, []);
+  // console.log("Search Params: ", searchParams.toString(), toast);
+  // console.log("All toasts: ", toasts);
 
-  useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
-    const query = new URLSearchParams(window.location.search);
-    if (query.get("success")) {
-      toast({
+  if (toastId == null) {
+    const status = searchParams.get("razorpay_payment_link_status");
+
+    if (status === "paid") {
+      console.log("Success toast is shown");
+      const toastData = toast({
         title: "Order placed!",
         description: "You will receive an email confirmation",
         duration: 5000,
         className: "success-toast",
       });
-    }
 
-    if (query.get("canceled")) {
-      toast({
-        title: "Order canceled!",
+      setToastId(toastData.id);
+    } else if (status === "failed") {
+      // console.log("Error toast is shown");
+      const toastData = toast({
+        title: "Order Failed!",
         description: "Continue to shop around and checkout when you're ready",
         duration: 5000,
         className: "error-toast",
       });
+
+      setToastId(toastData.id);
     }
-  }, []);
+
+    router.push("/credits");
+  }
 
   const onCheckout = async () => {
     const transaction = {
@@ -55,7 +63,14 @@ const Checkout = ({
       buyerId,
     };
 
-    await checkoutCredits(transaction);
+    // console.log("transaction: ", transaction);
+
+    const paymentLinkResponse = await checkoutCredits(transaction);
+    // console.log("paymentLinkResponse: ", paymentLinkResponse);
+
+    if (paymentLinkResponse && paymentLinkResponse.short_url) {
+      router.push(paymentLinkResponse.short_url);
+    }
   };
 
   return (
@@ -71,6 +86,6 @@ const Checkout = ({
       </section>
     </form>
   );
-};
+});
 
 export default Checkout;
