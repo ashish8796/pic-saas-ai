@@ -7,18 +7,14 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { navLinks } from "@/constants";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
+import Logo from "./Logo";
 
 const MobileNav = () => {
   const pathname = usePathname();
   return (
     <header className="header">
       <Link href="/" className="flex items-center md:py-2">
-        <Image
-          src="/assets/images/logo-text.svg"
-          alt="logo"
-          width={180}
-          height={28}
-        />
+        <Logo />
       </Link>
 
       <nav className="flex gap-2">
@@ -38,12 +34,7 @@ const MobileNav = () => {
 
             <SheetContent className="sheet-content sm:w-64">
               <>
-                <Image
-                  src="/assets/images/logo-text.svg"
-                  alt="logo"
-                  width={152}
-                  height={23}
-                />
+                <Logo className="mt-[-22px]" />
 
                 <ul className="header-nav_elements">
                   {navLinks.map((link) => {
