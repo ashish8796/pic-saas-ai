@@ -3,8 +3,6 @@ import { NextResponse } from "next/server";
 import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils";
 
 export async function POST(request: Request) {
-  console.log("IM in Razorpay Webhook");
-
   const responseBody = await request.text();
   const sig = request.headers.get("x-razorpay-signature") as string;
   const endpointSecret = process.env.RAZORPAY_WEBHOOK_SECRET as string;
@@ -39,13 +37,8 @@ export async function POST(request: Request) {
         createdAt: new Date(),
       };
 
-      // console.log("transaction: ", transaction);
-
       if (status === "captured") {
         const newTransaction = await createTransaction(transaction);
-
-        // console.log("newTransaction: ", newTransaction);
-
         return NextResponse.json({
           message: "OK",
           transaction: newTransaction,
