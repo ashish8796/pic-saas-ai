@@ -101,8 +101,6 @@ const TransformationForm = ({
         prompt: values.prompt,
       };
 
-      // console.log({ imageData });
-
       if (action === "Add") {
         try {
           const newImage = await addImage({
@@ -195,12 +193,6 @@ const TransformationForm = ({
       setNewTransformation(transformationType.config);
     }
   }, [image, transformationType.config, type]);
-
-  // console.log({
-  //   isTransforming,
-  //   newTransformation,
-  //   image,
-  // });
 
   return (
     <Form {...form}>
